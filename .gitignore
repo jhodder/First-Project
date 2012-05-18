@@ -1,0 +1,3 @@
+# Tell GIT to ignore following files and file types
+*.jdf 		# test
+
