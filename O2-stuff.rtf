@@ -1,0 +1,103 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
+{\fonttbl\f0\froman\fcharset0 Times-Roman;\f1\fnil\fcharset0 Consolas;\f2\fnil\fcharset0 Calibri;
+}
+{\colortbl;\red255\green255\blue255;\red15\green52\blue108;\red0\green0\blue238;\red15\green52\blue108;
+\red0\green0\blue238;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww19400\viewh21480\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\ql\qnatural
+
+\f0\fs36 \cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf2 Apache
+\b0  - Simplifying the configuration.\cf0 \
+\cf2 The configuration for {\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk/"}}{\fldrslt \cf3 \ul \ulc3 www.o2.co.uk}} sits in a number of files, including:\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+
+\f1 \cf0 balancer-manager-8080.conf
+\f0 \
+
+\f1 balancer-manager-8083.conf
+\f0 \
+
+\f1 bluedawn-include.conf
+\f0 \
+
+\f1 httpd-vhosts.conf
+\f0 \
+
+\f1 httpd-ssl.conf
+\f0 \
+\pard\pardeftab720\sa240\ql\qnatural
+\cf2 This is the story for almost all services and a hang-over from the AARF days.\cf0 \
+\cf2 My preference is that we have:\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk.conf/"}}{\fldrslt \cf3 \ul \ulc3 www.o2.co.uk.conf}}\cf2  (http configuration)\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk.secure.conf/"}}{\fldrslt \cf3 \ul \ulc3 www.o2.co.uk.secure.conf}}\cf2  (https configuration)\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+{\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk.shared.conf/"}}{\fldrslt \cf3 \ul \ulc3 www.o2.co.uk.shared.conf}}\cf2  (configuration common to both that can be included by both)\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+\cf2 Even if the service is simple, I recommend we use that, or a similar approach so we can see at a glance which files match which service.\cf0 \
+\cf2 httpd-vhosts.conf - should be the \'91enabler\'92, i.e. include the vhost configuration files for http sites that we want enabled\cf0 \
+\cf2 httpd-ssl.conf \'96 should be the same for https\cf0 \
+\cf2 \'a0\cf0 \
+\cf2 The rest is up to you \'96 give it a go and I can review or sit with you when you get back.\cf0 \
+\cf2 \'a0\cf0 \
+
+\b \cf2 GIT
+\b0  \'96 how to create repositories and then practically use them in the scenario of a development project, i.e. merging, reverting, rebasing, diffing, branching, tagging etc.\cf0 \
+\cf2 If you create a repo on github.com (free) and then give me access, I can set challenges to help you learn.\cf0 \
+\cf2 merging\
+reverting\
+rebasing\
+diffing\
+branching\
+tagging\
+clone\
+commit changes\
+push to a remote\
+roll back specific comments \
+\pard\pardeftab720\sa240\ql\qnatural
+\cf0 \
+\pard\pardeftab720\sa240\ql\qnatural
+
+\b \cf2 IP Design SoW translation \'96 
+\b0 Something I\'92ve wanted to do for a while is to create something that we can copy SoW data into that creates a readable representation of the environment. We spend too much time reverse engineering SoWs, so the ability to type in reals, vip nos etc into that creates a table/tables would be useful.\cf0 \
+Addendum to Apache \
+\pard\pardeftab720\sa240\ql\qnatural
+
+\f2\fs30 \cf4 I will try and look at the github thing tomorrow or Friday. I was going to upload our content repository, but don\'92t think it\'92s a good idea to put on github as it\'92s public by default. If you can clone, commit changes, push to remotes, rollback specific commits, etc. then you\'92ll already be way ahead of the content team. The idea behind learning this is to prevent myself and Phil being the only people that can assist with git issues. I\'92m also planning to migrate all our configurations to git so we don\'92t have to rely on the dev team for support.
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 \'a0
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 I\'92ve spoken to Alan about the apache cleanup and he\'92s suggested you come into the office for what is essentially a hand-over session. If we can spend a day refactoring one or two services, i.e. bluedawn-perf.ref.o2.co.uk, then the rest will become a lot more straight forward. We use mainly mod_rewrite, mod_proxy and mod_alias, so getting an understanding of those beforehand will be useful.
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 In answer to your questions:
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 1&2 - httpd.conf is read first, that includes httpd-vhosts.conf which includes all the http virtual hosts. httpd-ssl.conf includes all of the ssl virtual hosts. In both files you\'92ll see additional includes called servername-xx-xx.conf, and these each have balancer manager and rewrite configurations included.
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 With {\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk/"}}{\fldrslt \cf5 \ul \ulc5 www.o2.co.uk}} it breaks down for http as:
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 httpd.conf > httpd-vhosts.conf > servername80-1.conf > balancer-manager-8080.conf & bluedawn-include.conf
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 I would expect to see servername80-1.conf, balancer-manager-8080.conf and bluedawn-include.conf replaced with something like {\field{\*\fldinst{HYPERLINK "http://www.o2.co.uk.conf/"}}{\fldrslt \cf5 \ul \ulc5 www.o2.co.uk.conf}}. It\'92s debatable on whether or not we split down further to have a www config shared by both http and https virtual hosts.
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 3 - The balancer-manager-xxxx.conf files were originally used to configure ajp load balancing. We didn\'92t ever use ajp but Razorfish decided not to simplify. I\'92ve no idea why they split anything out into those servernamex-xxx.conf files. My guess is that RF just copied the legacy CFU configs.
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 \'a0
+\f0\fs24 \cf0 \
+
+\f2\fs30 \cf4 I\'92m on skype most of the time. Google talk is a bit useless as all the messages pop up on a computer at home most of the time. If I\'92m not on skype and you want to get in touch, just send me a text (07795 215 205) or give me a call.
+\f0\fs24 \cf0 \
+}
